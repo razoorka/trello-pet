@@ -1,52 +1,26 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import NotFound from '../../components/NotFound';
-import Content from '../../components/Content';
-import Footer from '../../components/Footer';
-// import Dashboard from '@components/Dashboard';
+import { DndProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import BoardContainer from '../Board/Board';
 
-import { asyncComponent } from '../../utils';
-
-import PrivateRoute from './PrivateRoute';
-import HeaderContainer from '../Header';
-
-const Dashboard = asyncComponent(() => import('../../components/Dashboard'));
+import NotFound from '../NotFound';
+import Header from '../Header';
 
 class App extends Component {
-  componentDidMount() {
-    const { getUserData } = this.props;
-    getUserData();
-  }
-
   render() {
-    const { authentificated, } = this.props;
     return (
       <div className="App">
-        {authentificated && <HeaderContainer />}
-        <Content>
+        <Header />
+        <DndProvider backend={HTML5Backend}>
           <Switch>
-            <PrivateRoute path="/" exact component={Dashboard} authentificated />
+            <Route exact path="/" component={BoardContainer} />
             <Route component={NotFound} />
           </Switch>
-        </Content>
-
-        {authentificated && <Footer />}
+        </DndProvider>
       </div>
     );
   }
 }
 
-App.propTypes = {
-  getUserData: PropTypes.func,
-  isLoaded: PropTypes.bool,
-  authentificated: PropTypes.bool,
-};
-
-App.defaultProps = {
-  getUserData: () => {},
-  isLoaded: false,
-  authentificated: false,
-};
-
-export default App
+export default App;
